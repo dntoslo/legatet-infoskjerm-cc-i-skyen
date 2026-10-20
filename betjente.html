@@ -8,13 +8,13 @@
   <link rel="icon" href="assets/dnt-logo.png">
   <!-- Versjonsnummeret i lenkene bumpes ved endringer, så TV-en ikke bruker gammel CSS/JS fra cache.
        Samme tall i betjente.html, selvbetjente.html og oslomarka.html. -->
-  <link rel="stylesheet" href="assets/style.css?v=12">
+  <link rel="stylesheet" href="assets/style.css?v=13">
 </head>
 <!-- data-side velger konfigurasjonen for denne sida i SIDER i assets/app.js. -->
 <body data-side="betjente">
 <div class="skjerm">
   <header class="topp">
-    <img class="logo" src="assets/dnt-logo.png" alt="DNT">
+    <a class="hjem" href="index.html" title="Til hovedsiden"><img class="logo" src="assets/dnt-logo.png" alt="DNT, til hovedsiden"></a>
     <div class="tittel">
       <h1>Betjente hytter</h1>
       <p class="undertittel">DNT Oslo og Omegn</p>
@@ -32,8 +32,15 @@
   </main>
 
   <div class="oppdatert" id="oppdatert"></div>
+
+  <!-- Tilbake til hovedsiden for den som bruker sida med mus. Skjult til musa
+       beveger seg (se app.js), så den aldri står på TV-en. -->
+  <a class="tilbake" href="index.html">
+    <svg class="pil" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    Alle sider
+  </a>
 </div>
 
-  <script src="assets/app.js?v=12"></script>
+  <script src="assets/app.js?v=13"></script>
 </body>
 </html>
