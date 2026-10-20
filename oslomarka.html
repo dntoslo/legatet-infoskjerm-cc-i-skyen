@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="nb">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Oslomarka og Oslofjorden, DNT Oslo og Omegn</title>
+  <link rel="icon" href="assets/dnt-logo.png">
+  <!-- Versjonsnummeret i lenkene bumpes ved endringer, så TV-en ikke bruker gammel CSS/JS fra cache.
+       Samme tall i betjente.html, selvbetjente.html og oslomarka.html. -->
+  <link rel="stylesheet" href="assets/style.css?v=11">
+</head>
+<!-- data-side velger konfigurasjonen for denne sida i SIDER i assets/app.js. -->
+<body data-side="oslomarka">
+<!-- Ikonene som app.js og legenden henter med <use href="#...">. Egne, enkle
+     strektegninger, farge og strektykkelse settes av .ikon i style.css.
+     «Egen nøkkel» tegnes som lukket hengelås, ikke som en nøkkel, så det ikke
+     forveksles med DNT-nøkkelen (som ikke har noe ikon). Sammen med den åpne
+     hengelåsen for «ulåst» blir det et par: låst med egen ordning, eller ulåst. -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <symbol id="ikon-noekkel" viewBox="0 0 24 24">
+    <rect x="4" y="11" width="16" height="10" rx="2"/>
+    <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+  </symbol>
+  <symbol id="ikon-ulaast" viewBox="0 0 24 24">
+    <rect x="4" y="11" width="16" height="10" rx="2"/>
+    <path d="M8 11V7a4 4 0 0 1 8 0"/>
+  </symbol>
+</svg>
+<div class="skjerm">
+  <header class="topp">
+    <img class="logo" src="assets/dnt-logo.png" alt="DNT">
+    <div class="tittel">
+      <h1>Oslomarka og Oslofjorden</h1>
+      <p class="undertittel">DNT Oslo og Omegn</p>
+    </div>
+    <div class="forklaring">
+      <span><i class="prikk selvbetjent"></i>Åpen</span>
+      <span><i class="prikk stengt"></i>Stengt</span>
+      <span><svg class="ikon" aria-hidden="true"><use href="#ikon-noekkel"></use></svg>Egen nøkkel</span>
+      <span><svg class="ikon" aria-hidden="true"><use href="#ikon-ulaast"></use></svg>Ulåst</span>
+    </div>
+    <div class="idag" id="idag"></div>
+  </header>
+
+  <main class="kartflate" id="kartflate" aria-live="polite">
+    <p class="laster">Henter åpningstider …</p>
+  </main>
+
+  <footer class="bunn">
+    <p class="merknad">Ubetjente hytter åpnes med DNT-nøkkel der ikke annet er merket. Sengetall fra ut.no.</p>
+    <div class="oppdatert" id="oppdatert"></div>
+  </footer>
+</div>
+
+  <script src="assets/app.js?v=11"></script>
+</body>
+</html>
