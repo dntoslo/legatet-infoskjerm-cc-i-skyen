@@ -610,10 +610,24 @@
     }
   }
 
+  // Side 3: sengetall og «Betjent» som ikke får plass ved siden av navnet,
+  // skjules, så navnet alltid vises helt og låsikonet blir stående. Måles på
+  // nytt når fontene er klare og når vinduet endrer størrelse.
+  function kortMeta(flate) {
+    flate.querySelectorAll(".meta .detalj").forEach(d => {
+      d.classList.remove("skjult");
+      if (d.scrollWidth > d.clientWidth) d.classList.add("skjult");
+    });
+  }
+
   let strekTimer = null;
   window.addEventListener("resize", () => {
     clearTimeout(strekTimer);
-    strekTimer = setTimeout(() => tegnStreker(document.getElementById("kartflate")), 150);
+    strekTimer = setTimeout(() => {
+      const flate = document.getElementById("kartflate");
+      kortMeta(flate);
+      tegnStreker(flate);
+    }, 150);
   });
 
   /* ---------- Hele flaten ---------- */
@@ -657,6 +671,8 @@
       .forEach(n => plasser(n, hoyre));
 
     flate.append(venstre, kart, hoyre);
+    kortMeta(flate);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => kortMeta(flate));
 
     hentKart()
       .then(grunnlag => {

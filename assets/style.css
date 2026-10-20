@@ -487,6 +487,21 @@ body[data-side="oslomarka"] .kort.liste .navn {
   color: var(--dnt-roed);
   font-weight: 400;
 }
+/* Tilleggsteksten får aldri gå inn i navnet. Kolonnen klipper, og teksten
+   kortes med ellipse mens låsikonet står. Sengetall og «Betjent» som ikke får
+   plass, skjules helt av kortMeta() i app.js, så det ikke står «3 se…». */
+.hytte .meta {
+  min-width: 0;
+  overflow: hidden;
+}
+.hytte .meta > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hytte .meta .skjult {
+  display: none;
+}
 
 /* Låsikonene for nøkkeltype (lukket hengelås for egen nøkkel, åpen for ulåst),
    strektegnet i samme grå som teksten. Symbolene ligger i oslomarka.html, og
