@@ -20,7 +20,6 @@
   const RELOAD_MS = 30 * 60 * 1000;       // sikkerhetsnett i tillegg til TV-ens refresh
   const GAMMEL_ETTER_TIMER = 36;          // varsle hvis Action ikke har levert nye data
   const SNART_DAGER = 14;                 // vis «om N dager» innen dette
-  const MUS_SKJUL_MS = 3000;              // «Alle sider»-knappen etter siste musebevegelse
 
   // Én konfigurasjon per side, valgt med data-side på <body>.
   //   velg: hvilke hytter i data.json som hører til sida.
@@ -732,32 +731,6 @@
 
   last();
   setTimeout(() => location.reload(), RELOAD_MS);
-
-  // Knappen tilbake til hovedsiden (.tilbake i HTML-fila) vises når musa
-  // beveger seg og skjules etter MUS_SKJUL_MS uten bevegelse. TV-en har ingen
-  // mus, så der står den aldri. Står musa stille over knappen, blir den
-  // stående. Det sjekkes på posisjonen, fordi :hover ikke alltid er oppdatert
-  // når knappen nettopp har fått klikkflate.
-  const tilbake = document.querySelector(".tilbake");
-  let musTimer = null;
-  let musX = 0, musY = 0;
-  function skjulKnapp() {
-    const r = tilbake.getBoundingClientRect();
-    if (musX >= r.left && musX <= r.right && musY >= r.top && musY <= r.bottom) {
-      musTimer = setTimeout(skjulKnapp, MUS_SKJUL_MS);
-    } else {
-      document.body.classList.remove("mus");
-    }
-  }
-  if (tilbake) {
-    document.addEventListener("mousemove", e => {
-      musX = e.clientX;
-      musY = e.clientY;
-      document.body.classList.add("mus");
-      clearTimeout(musTimer);
-      musTimer = setTimeout(skjulKnapp, MUS_SKJUL_MS);
-    });
-  }
 
   // Eksponert for testing i konsollen: infoskjerm.status(hytte, "2026-10-04")
   window.infoskjerm = { status, gjeldende, iDagOslo, SIDE };
