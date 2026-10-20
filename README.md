@@ -21,7 +21,7 @@ Spillelista i MagicInfo skal peke rett på de tre hyttesidene, ikke på hovedsid
 - Kartgrunnlagene ligger i `assets/sor-norge.json` (side 1 og 2) og `assets/oslomarka.json` (side 3) og lages av `scripts/lag_kart.py`, se under.
 - Sidene laster seg selv på nytt hver 30. minutt, i tillegg til at TV-en refresher.
 - Innholdet ligger i en fast 16:9-flate som sentreres i vinduet, så siden ser lik ut på TV, i et smalt vindu og i et stående vindu.
-- Hovedsiden `index.html` bruker ikke `app.js` eller `style.css`. Den har egen, enkel stil med samme font og farger, så den også er lesbar på telefon.
+- Hovedsiden `index.html` bruker ikke `app.js` eller `style.css`. Den har egen, enkel stil med samme font og farger, så den også er lesbar på telefon. Under lenkekortene står de fulle adressene til de tre sidene med en kopiknapp, til bruk i MagicInfo. Adressene er skrevet inn i `index.html` og må endres der hvis repoet får nytt navn.
 
 Endrer du `assets/style.css` eller `assets/app.js`, bump versjonsnummeret (`?v=7`) i lenkene i `betjente.html`, `selvbetjente.html` og `oslomarka.html`, slik at TV-en ikke fortsetter med gammel fil fra cache. Tallet skal være likt i alle tre filene.
 

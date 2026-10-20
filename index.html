@@ -32,6 +32,7 @@
       --hvit: #FFFFFF;
       --sort: #000000;
       --graa: #5a5651;
+      --moerk-beige: #F8E6C6;
       --dnt-roed: #D82D20;
     }
 
@@ -113,6 +114,85 @@
       font-size: 1.1rem;
       line-height: 1.4;
     }
+
+    /* Adressene til MagicInfo: navn, full adresse og en kopiknapp per side.
+       Adressen er vanlig tekst, så den også kan merkes og kopieres for hånd. */
+    .adresser {
+      margin-top: 3rem;
+      background: var(--hvit);
+      border-radius: 1rem;
+      padding: 1.5rem 1.8rem;
+      box-shadow: 0 0.15rem 0.6rem rgba(0, 0, 0, 0.04);
+    }
+    .adresser h2 {
+      margin: 0;
+      font-weight: 400;
+      font-size: 1.5rem;
+      line-height: 1.1;
+    }
+    .adresser .hjelp {
+      margin: 0.4rem 0 1rem;
+      color: var(--graa);
+      font-size: 1.05rem;
+      line-height: 1.4;
+    }
+    .adresser ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    /* Navnet over adressen og knappen til høyre, på alle bredder. */
+    .adresse {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      column-gap: 1.2rem;
+      row-gap: 0.15rem;
+      padding: 0.8rem 0;
+      border-top: 1px solid var(--moerk-beige);
+    }
+    .adresse .navn {
+      font-weight: 400;
+    }
+    .adresse .url {
+      grid-row: 2;
+      font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+      font-size: 0.9rem;
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+    .adresse .kopier {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+    .kopier {
+      font: inherit;
+      font-weight: 400;
+      font-size: 1rem;
+      min-width: 6.5rem;
+      padding: 0.45rem 1rem;
+      border: 1px solid var(--sort);
+      border-radius: 2rem;
+      background: var(--hvit);
+      color: var(--sort);
+      cursor: pointer;
+    }
+    .kopier:hover {
+      background: var(--lys-beige);
+    }
+    .kopier:focus-visible {
+      outline: 0.2rem solid var(--dnt-roed);
+      outline-offset: 0.15rem;
+    }
+    .kopier.ferdig {
+      border-color: var(--graa);
+      color: var(--graa);
+    }
+    /* På smale skjermer står knappen ved navnet, og adressen får hele bredden. */
+    @media (max-width: 44rem) {
+      .adresse .url { grid-column: 1 / -1; }
+      .adresse .kopier { grid-row: 1; }
+    }
   </style>
 </head>
 <body>
@@ -139,6 +219,63 @@
       <p>Ubetjente og betjente hytter i marka og langs fjorden, med sengetall.</p>
     </a>
   </nav>
+
+  <!-- Adressene står skrevet ut, ikke regnet ut fra location, så de er riktige
+       også når sida vises et annet sted enn på GitHub Pages (som i
+       arbeidskopien i Claude). Endres repo- eller organisasjonsnavnet, må de
+       oppdateres her. -->
+  <section class="adresser" aria-labelledby="adresser-tittel">
+    <h2 id="adresser-tittel">Adresser til MagicInfo</h2>
+    <p class="hjelp">Spillelista skal peke rett på disse tre sidene, ikke på hovedsiden.</p>
+    <ul>
+      <li class="adresse">
+        <span class="navn">Betjente hytter</span>
+        <span class="url">https://dntoslo.github.io/legatet-infoskjerm-cc-i-skyen/betjente.html</span>
+        <button type="button" class="kopier" id="kopier-betjente">Kopier</button>
+      </li>
+      <li class="adresse">
+        <span class="navn">Selvbetjente hytter</span>
+        <span class="url">https://dntoslo.github.io/legatet-infoskjerm-cc-i-skyen/selvbetjente.html</span>
+        <button type="button" class="kopier" id="kopier-selvbetjente">Kopier</button>
+      </li>
+      <li class="adresse">
+        <span class="navn">Oslomarka og Oslofjorden</span>
+        <span class="url">https://dntoslo.github.io/legatet-infoskjerm-cc-i-skyen/oslomarka.html</span>
+        <button type="button" class="kopier" id="kopier-oslomarka">Kopier</button>
+      </li>
+    </ul>
+  </section>
 </div>
+
+<script>
+  // Kopierer adressen i samme rad. Nekter nettleseren tilgang til
+  // utklippstavla, merkes adressen i stedet, så den kan kopieres med Ctrl+C.
+  document.querySelectorAll(".kopier").forEach(function (knapp) {
+    knapp.addEventListener("click", function () {
+      var url = knapp.parentNode.querySelector(".url");
+      var vis = function (tekst) {
+        knapp.textContent = tekst;
+        knapp.classList.add("ferdig");
+        setTimeout(function () {
+          knapp.textContent = "Kopier";
+          knapp.classList.remove("ferdig");
+        }, 2000);
+      };
+      var merk = function () {
+        var omraade = document.createRange();
+        omraade.selectNodeContents(url);
+        var valg = window.getSelection();
+        valg.removeAllRanges();
+        valg.addRange(omraade);
+        vis("Merket");
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url.textContent).then(function () { vis("Kopiert"); }, merk);
+      } else {
+        merk();
+      }
+    });
+  });
+</script>
 </body>
 </html>
