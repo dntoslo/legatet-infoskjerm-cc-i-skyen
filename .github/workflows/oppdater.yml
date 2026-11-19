@@ -22,12 +22,13 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+# To jobber, som i GitHubs egen mal for Pages. Med henting, opplasting og
+# publisering i én jobb fant deploy-pages av og til ikke pakken som nettopp
+# var lastet opp («No artifacts named github-pages», 19. november 2026).
+# Når publiseringen er en egen jobb, er pakken ferdig registrert før den starter.
 jobs:
-  oppdater-og-publiser:
+  oppdater:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -56,5 +57,12 @@ jobs:
         with:
           path: .
 
+  publiser:
+    needs: oppdater
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
       - id: deploy
         uses: actions/deploy-pages@v4
