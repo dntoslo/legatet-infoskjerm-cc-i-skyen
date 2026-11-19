@@ -247,7 +247,8 @@
       height: 0.5rem;
       border-radius: 50%;
       background: var(--hvit);
-      box-shadow: 0 0 0.15rem rgba(90, 86, 81, 0.6);
+      border: 1px solid #aeb9c4;
+      box-shadow: 0 0 0.2rem rgba(90, 110, 130, 0.7);
       opacity: 0;
       animation: fall 1.8s linear forwards;
     }
@@ -255,7 +256,7 @@
       0%   { opacity: 0; transform: translateY(0); }
       15%  { opacity: 1; }
       85%  { opacity: 1; }
-      100% { opacity: 0; transform: translateY(8.6rem); }
+      100% { opacity: 0; transform: translateY(8.2rem); }
     }
     /* Snøen som legger seg på snømannen. */
     .snolag {
@@ -397,8 +398,9 @@
       if (minimertBevegelse) { return; }
       var flak = document.createElement("i");
       flak.className = "flak";
-      flak.style.left = (Math.random() * 6).toFixed(2) + "rem";
-      flak.style.width = flak.style.height = (0.3 + Math.random() * 0.4).toFixed(2) + "rem";
+      // Flakene faller over hele snømannen (som står 1,5 til 7 rem fra venstre i scenen).
+      flak.style.left = (1.5 + Math.random() * 5).toFixed(2) + "rem";
+      flak.style.width = flak.style.height = (0.4 + Math.random() * 0.4).toFixed(2) + "rem";
       flak.style.animationDuration = (1.4 + Math.random() * 1).toFixed(2) + "s";
       scene.appendChild(flak);
       setTimeout(function () { flak.remove(); }, 2600);
@@ -407,7 +409,7 @@
       if (snoer) { return; }
       snoer = true;
       scene.classList.add("snoer");
-      var tikk = setInterval(lagFlak, 90);
+      var tikk = setInterval(lagFlak, 60);
       setTimeout(function () {
         clearInterval(tikk);
         scene.classList.remove("snoer");
