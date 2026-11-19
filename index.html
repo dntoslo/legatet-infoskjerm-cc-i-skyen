@@ -223,11 +223,12 @@
       outline-offset: 0.2rem;
       border-radius: 0.5rem;
     }
+    .snomann svg { transition: transform 0.2s; }
     .snomann:hover svg { transform: rotate(-2deg); }
     .sky {
       position: absolute;
       top: 0;
-      right: -3rem;
+      right: 0;
       width: 7rem;
       height: 3.6rem;
       opacity: 0;
@@ -253,7 +254,8 @@
     @keyframes fall {
       0%   { opacity: 0; transform: translateY(0); }
       15%  { opacity: 1; }
-      100% { opacity: 1; transform: translateY(8.6rem); }
+      85%  { opacity: 1; }
+      100% { opacity: 0; transform: translateY(8.6rem); }
     }
     /* Snøen som legger seg på snømannen. */
     .snolag {
@@ -264,10 +266,9 @@
     .snoscene.snodd .snolag { opacity: 1; }
     @media (prefers-reduced-motion: reduce) {
       .sky, .snolag { transition: none; }
-      .flak { animation-duration: 0.01s; }
     }
     @media (max-width: 44rem) {
-      .snoscene { transform: scale(0.75); transform-origin: right bottom; }
+      .snoscene { display: none; }
     }
   </style>
 </head>
@@ -391,15 +392,16 @@
     var scene = document.getElementById("snoscene");
     var knapp = document.getElementById("snomann");
     var snoer = false;
+    var minimertBevegelse = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     var lagFlak = function () {
+      if (minimertBevegelse) { return; }
       var flak = document.createElement("i");
       flak.className = "flak";
       flak.style.left = (Math.random() * 6).toFixed(2) + "rem";
-      flak.style.animationDelay = "0s";
       flak.style.width = flak.style.height = (0.3 + Math.random() * 0.4).toFixed(2) + "rem";
       flak.style.animationDuration = (1.4 + Math.random() * 1).toFixed(2) + "s";
       scene.appendChild(flak);
-      setTimeout(function () { scene.removeChild(flak); }, 2600);
+      setTimeout(function () { flak.remove(); }, 2600);
     };
     knapp.addEventListener("click", function () {
       if (snoer) { return; }
