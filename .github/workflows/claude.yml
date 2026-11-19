@@ -48,8 +48,33 @@ jobs:
         with:
           fetch-depth: 1
 
+      # Nettleser til scripts/skjermbilde.py, så Claude kan se sidene den
+      # endrer og sjekke layoutreglene, se «Se resultatet» i CLAUDE.md.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installer Playwright og Chromium
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
       - name: Kjør Claude Code
         uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # Skjermbildescriptet kan kjøres uten egen sikkerhetsvurdering hver gang.
+          claude_args: |
+            --allowedTools "Bash(python scripts/skjermbilde.py:*),Bash(python3 scripts/skjermbilde.py:*)"
+
+      # Bildene Claude tok, til nedlasting nederst på siden for kjøringen
+      # (Actions → kjøringen → Artifacts → skjermbilder).
+      - name: Last opp skjermbilder
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: skjermbilder
+          path: /tmp/skjermbilder
+          if-no-files-found: ignore
+          retention-days: 14

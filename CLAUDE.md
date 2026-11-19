@@ -2,6 +2,10 @@
 
 Infoskjerm for hyttene i DNT Oslo og Omegn på GitHub Pages: tre statiske sider uten byggesteg, et Python-script som henter data fra ut.no og en Action som kjører scriptet og deployer. Hvordan det henger sammen, og hvordan hytteutvalg og kart styres, står i README.md. Kodefilene har hver sin innledning med det som gjelder der.
 
+## Se resultatet før du leverer
+
+Etter endringer i HTML, CSS eller JS, kjør `python scripts/skjermbilde.py` og se på bildene i `/tmp/skjermbilder` med Read. Scriptet tar infoskjermsidene i 1920 x 1080 og forsiden også på mobil, og sjekker kolonner og streker med tall. Gjelder endringen en interaksjon, legg til `--klikk "<selektor>"` for et bilde etter klikket. Tallsjekken fanger ikke alt, for eksempel elementer som ligger oppå hverandre, så se på bildene. Rett det du ser, kjør på nytt, og skriv i svaret hva bildene viste og hva scriptet rapporterte. Bildene lastes opp som artifact `skjermbilder` på kjøringen.
+
 ## Gotchas
 
 - `data.json` er generert. Kjører du scriptet lokalt, endres bare tidsstempelet `hentet`. Nullstill med `git checkout -- data.json` før commit, Action committer selv når hyttedataene faktisk er endret.
