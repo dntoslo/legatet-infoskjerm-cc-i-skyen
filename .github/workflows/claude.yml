@@ -1,0 +1,55 @@
+# Claude i issues og PR-er.
+#
+# Skriv @claude i et issue (tittel eller tekst), i en kommentar eller i en
+# PR-review, så starter Claude Code her i Actions. Claude leser CLAUDE.md,
+# gjør endringen på en egen gren og svarer i samme tråd med lenke for å lage
+# en PR. Ingenting går til main uten at noen merger PR-en.
+#
+# Bare brukere med skrivetilgang til repoet kan starte Claude. Det sjekker
+# actionen selv, og det er viktig fordi repoet er offentlig: fremmede kan
+# opprette issues, men @claude fra dem gjør ingenting.
+#
+# Autentisering: legg inn én av disse under Settings → Secrets and variables
+# → Actions → New repository secret. Den som mangler, blir tom og ignoreres.
+#   ANTHROPIC_API_KEY        API-nøkkel fra console.anthropic.com, betales per bruk
+#   CLAUDE_CODE_OAUTH_TOKEN  fra `claude setup-token`, bruker et Claude-abonnement
+#
+# Oppsettet følger examples/claude.yml i anthropics/claude-code-action.
+
+name: Claude
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  claude:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read # lar Claude lese resultatet av andre workflows, f.eks. en feilende deploy
+    steps:
+      - name: Hent koden
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Kjør Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
