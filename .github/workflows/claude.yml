@@ -78,3 +78,57 @@ jobs:
           path: /tmp/skjermbilder
           if-no-files-found: ignore
           retention-days: 14
+
+      # Viser bildene rett i tråden, så de kan ses uten å laste ned zip.
+      # Bildene lagres på grenen «skjermbilder», i én mappe per kjøring, og
+      # vises i en kommentar og i Summary for kjøringen. Grenen er bare et
+      # bildearkiv: den merges aldri, og main og siden påvirkes ikke.
+      - name: Vis skjermbildene i tråden
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+          NUMMER: ${{ github.event.issue.number || github.event.pull_request.number }}
+        run: |
+          if ! ls /tmp/skjermbilder/*.png >/dev/null 2>&1; then
+            echo "Claude tok ingen skjermbilder i denne kjøringen."
+            exit 0
+          fi
+
+          arkiv=$(mktemp -d)
+          cd "$arkiv"
+          git init -q
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          if git fetch -q --depth 1 origin skjermbilder 2>/dev/null; then
+            git checkout -q -b skjermbilder FETCH_HEAD
+          else
+            git checkout -q --orphan skjermbilder
+          fi
+          mkdir -p "$RUN_ID"
+          cp /tmp/skjermbilder/*.png "$RUN_ID"/
+          git add "$RUN_ID"
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "Skjermbilder fra kjøring $RUN_ID"
+          git push -q origin skjermbilder
+
+          base="https://raw.githubusercontent.com/${REPO}/skjermbilder/${RUN_ID}"
+          {
+            echo "### 📸 Skjermbilder fra Claude"
+            echo
+            echo "Fra [kjøring ${RUN_ID}](https://github.com/${REPO}/actions/runs/${RUN_ID}). Klikk et bilde for full størrelse."
+            for fil in "$RUN_ID"/*.png; do
+              navn=$(basename "$fil")
+              case "$navn" in *mobil*) bredde=260 ;; *) bredde=640 ;; esac
+              echo
+              echo "**${navn%.png}**"
+              echo
+              echo "<a href=\"${base}/${navn}\"><img src=\"${base}/${navn}\" width=\"${bredde}\"></a>"
+            done
+          } > galleri.md
+
+          cat galleri.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$NUMMER" ]; then
+            gh api "repos/${REPO}/issues/${NUMMER}/comments" -F body=@galleri.md --silent
+          fi
